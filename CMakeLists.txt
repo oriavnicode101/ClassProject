@@ -5,4 +5,8 @@ set(CMAKE_CXX_STANDARD 20)
 
 add_executable(classProjectFinal main.cpp
         Appointment.cpp
-        Appointment.h)
+        Appointment.h
+        Patient.cpp
+        Patient.h
+        Doctor.cpp
+        Doctor.h)
