@@ -1,10 +1,10 @@
-John
-317493872
-male
-29
-456789
-jo@gmail.com
-brain
+daniella
+2376883
+female
+70
+987654
+daniella@gmail.com
+fever
 ----------------------------------
 ori
 3188073
@@ -22,11 +22,11 @@ male
 shalom@gmail.com
 poisoning
 ----------------------------------
-daniella
-2376883
-female
-70
-987654
-daniella@gmail.com
-fever
+John
+317493872
+male
+29
+456789
+jo@gmail.com
+brain blabla
 ----------------------------------

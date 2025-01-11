@@ -314,7 +314,7 @@ void Patient_login() {
                 cout << "1. Schedule an appointment " << endl;
                 cout << "2. Cancel an appointment " << endl;
                 cout << "3. View your appointments " << endl;
-                cout << "4. Edit medical history " << endl;
+                cout << "4. Add medical history " << endl;
                 cout << "5. Change Password " << endl;
                 cout << "6. Rate your visit" << endl;
                 cout << "7. Exit" << endl;
