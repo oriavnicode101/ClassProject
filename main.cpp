@@ -318,31 +318,47 @@ void Patient_login() {
                 cout << "5. Change Password " << endl;
                 cout << "6. Rate your visit" << endl;
                 cout << "7. Exit" << endl;
-
                 cin >> choice;
 
                 switch (choice) {
                     case 1: {   // schedule an appointment
                         // parameters
-                        string d,m,y;
+                        string d,m,y, date;
                         string time;
                         string special;
                         string drID;
                         bool isAvailable = true;
-
+                        bool vaildeDate =  false;
                         //user input
-                        cout << "Enter a specific date to schedule (DD MM YYYY): ";
-                        cin >> d >> m >> y;
-                        string date = d + m + y;
-                        cout << "choose from these hours: 10:00 | 10:30 | 11:00 | 11:30 " << endl;
-                        cin >> time;
+                        while (!vaildeDate) {
+                            cout << "Enter a specific date to schedule (DD MM YYYY): ";
+                            cin >> d >> m >> y;
+                            // Check if the day, month, and year are valid numbers
+                            if (d.length() == 2 && m.length() == 2 && y.length() == 4 && stoi(d) <= 31 && stoi(m) <= 12 && stoi(y) > 0) {
+                                date = d + m + y;
+                                vaildeDate = true;
+                                bool validTime = false;
+                                while (!validTime) {
+                                    cout << "choose from these hours: 10:00 | 10:30 | 11:00 | 11:30 " << endl;
+                                    cin >> time;
+                                    if (time == "10:00" || time == "10:30" || time == "11:00" || time == "11:30") {
+                                        validTime = true;
+                                    }
+                                    else {
+                                        cout << "Invalid time. Please try again." << endl;
+                                    }
+                                }
+                            }
+                            else {
+                                cout << "Invalid date. Please try again." << endl;
+                            }
+                        }
                         cout << "Enter the specialty of the doctor:" << endl;
                         cout << "options: " << endl;
 
                         for (auto &pair: newDoctors) { // prints the specializations of the doctors to choose from
                             cout << pair.second.getSpecialization() << endl;
                         }
-
                         cin >> special;
 
                         for (auto &pair: newDoctors) { // saves the id of the doctor who has the specialization into drID
@@ -350,7 +366,6 @@ void Patient_login() {
                                 drID = pair.first;
                             }
                         }
-
                         cout << "id:" << drID << endl;
                         string key = date + time + id;
 
@@ -360,7 +375,6 @@ void Patient_login() {
                                 isAvailable = false;
                             }
                         }
-
                         if (isAvailable) { // creates a new appointment
                             Appointment appointment(date,drID,id,time,true);
                             newAppointments[key] = appointment;
@@ -372,17 +386,27 @@ void Patient_login() {
                         }
                         break;
                     }
-                    case 2: {   // cancel an appointment
+                    case 2: {// cancel an appointment
                         // parameters
                         string d, m, y, date, key;
                         int confirm;
                         bool appointmentFound = false;
 
                         // User input for cancellation
-                        cout << "Enter a specific date to cancel (DD MM YYYY): ";
-                        cin >> d >> m >> y;
-                        date = d + m + y;
+                        bool vaildeDate =  false;
+                        while (!vaildeDate) {
+                            cout << "Enter a specific date to cancel (DD MM YYYY): ";
+                            cin >> d >> m >> y;
 
+                            // Check if the day, month, and year are valid numbers
+                            if (d.length() == 2 && m.length() == 2 && y.length() == 4 && stoi(d) <= 31 && stoi(m) <= 12 && stoi(y) > 0) {
+                                date = d + m + y;
+                                vaildeDate = true;
+                            }
+                            else {
+                                cout << "Invalid date. Please try again." << endl;
+                            }
+                        }
                         // Loop to find and cancel appointment safely
                         for (auto it = newAppointments.begin(); it != newAppointments.end(); ) {
                             if (it->second.get_ptId() == id && it->second.get_date() == date) {
@@ -404,7 +428,6 @@ void Patient_login() {
                                 ++it;
                             }
                         }
-
                         if (!appointmentFound) {
                             cout << "No appointment found for the given date." << endl;
                         }
