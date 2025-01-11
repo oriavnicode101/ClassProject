@@ -792,7 +792,7 @@ void Doctor_login() {
                         // user input
                         cout << "Enter the patient's id: " << endl;
                         cin >> patient_id;
-
+                        bool found = false;
                         for ( auto& pair: newPatients)  { // options for the medical history
                             if (pair.first == patient_id) {
 
@@ -823,7 +823,11 @@ void Doctor_login() {
                                     cout << "Exiting..." << endl;
                                     cout << "------------------------------------------------------------" << endl;
                                 }
+                                found = true;
                             }
+                        }
+                        if (!found) {
+                            cout << "Patient not found" << endl;
                         }
                         savePatients(newPatients);
                     }
