@@ -374,43 +374,41 @@ void Patient_login() {
                     }
                     case 2: {   // cancel an appointment
                         // parameters
-                        string d,m,y;
+                        string d, m, y, date, key;
                         int confirm;
-                        string key;
-                        bool cancel = false;
+                        bool appointmentFound = false;
 
-                        // user input
-                        cout << "Enter a specific date to cancel (DD MM YYYY): " << endl;
+                        // User input for cancellation
+                        cout << "Enter a specific date to cancel (DD MM YYYY): ";
                         cin >> d >> m >> y;
-                        string date = d + m + y;
+                        date = d + m + y;
 
-                        for (auto &pair: newAppointments) {
-                            // prints the appointment
-                            if (pair.second.get_ptId() == id && pair.second.get_date() == date) {
-                                cancel = true;
-                                cout << "Details of your appointment you wish to cancel: " << endl;
-                                pair.second.print();
-                                key = pair.first;
-                                cout << "Are you sure you want to cancel this appointment? 1 = YES | 2 = NO " << endl;
+                        // Loop to find and cancel appointment safely
+                        for (auto it = newAppointments.begin(); it != newAppointments.end(); ) {
+                            if (it->second.get_ptId() == id && it->second.get_date() == date) {
+                                cout << "Details of your appointment to cancel:" << endl;
+                                it->second.print();
+                                cout << "Are you sure you want to cancel this appointment? 1 = YES | 2 = NO ";
                                 cin >> confirm;
-                                if (confirm == 1) { // erases the appointment from the map and the file
-                                    cout << "Appointment cancelled" << endl;
-                                    for (auto& pair: newAppointments) { // sets available to true and erases the patients id
-                                        if (pair.first == key && pair.second.get_date() == date) {
-                                            newAppointments.erase(key);
-                                            saveAppointments(newAppointments);
-                                        }
-                                    }
+
+                                if (confirm == 1) {
+                                    it = newAppointments.erase(it);  // Erase safely and update iterator
+                                    cout << "Appointment successfully cancelled." << endl;
+                                    saveAppointments(newAppointments);
+                                    appointmentFound = true;
+                                } else {
+                                    cout << "Appointment not cancelled." << endl;
+                                    ++it;
                                 }
-                                else {
-                                    cout << "Appointment not cancelled" << endl;
-                                    break;
-                                }
+                            } else {
+                                ++it;
                             }
                         }
-                        if (!cancel) {
-                            cout << "You have no appointments at that date" << endl;
+
+                        if (!appointmentFound) {
+                            cout << "No appointment found for the given date." << endl;
                         }
+
                         break;
                     }
                     case 3: {    // prints the appointment
