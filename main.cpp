@@ -180,7 +180,7 @@ void saveAppointments(const unordered_map<string, Appointment>& appointments) {
         file << appointment.getTime() << endl;
         file << appointment.get_drId() << endl;
         file << appointment.get_ptId() << endl;
-        file << (appointment.get_is_available() ? "1" : "0") << endl;
+        file << (appointment.get_is_Available() ? "1" : "0") << endl;
         file << "----------------------------------" << endl;
     }
     file.close();
@@ -328,15 +328,15 @@ void Patient_login() {
                         string special;
                         string drID;
                         bool isAvailable = true;
-                        bool vaildeDate =  false;
+                        bool vaildDate =  false;
                         //user input
-                        while (!vaildeDate) {
-                            cout << "Enter a specific date to schedule (DD MM YYYY): ";
+                        while (!vaildDate) {
+                            cout << "Enter a specific date to schedule (DD MM YYYY): " << endl;
                             cin >> d >> m >> y;
                             // Check if the day, month, and year are valid numbers
                             if (d.length() == 2 && m.length() == 2 && y.length() == 4 && stoi(d) <= 31 && stoi(m) <= 12 && stoi(y) > 0) {
                                 date = d + m + y;
-                                vaildeDate = true;
+                                vaildDate = true;
                                 bool validTime = false;
                                 while (!validTime) {
                                     cout << "choose from these hours: 10:00 | 10:30 | 11:00 | 11:30 " << endl;
@@ -366,13 +366,14 @@ void Patient_login() {
                                 drID = pair.first;
                             }
                         }
-                        cout << "id:" << drID << endl;
                         string key = date + time + id;
+                        string blockedByDoctor = date;
 
                         for (auto &pair: newAppointments) { // checks if the appointment is already booked
-                            if (pair.first == key && pair.second.getTime() == time && pair.second.get_date() == date) {
-                                cout << "The appointment is already booked" << endl;
+                            if (pair.first == key || pair.second.get_is_Available() == false) {
+                                cout << "The appointment is unavailable" << endl;
                                 isAvailable = false;
+                                break;
                             }
                         }
                         if (isAvailable) { // creates a new appointment
@@ -393,15 +394,15 @@ void Patient_login() {
                         bool appointmentFound = false;
 
                         // User input for cancellation
-                        bool vaildeDate =  false;
-                        while (!vaildeDate) {
-                            cout << "Enter a specific date to cancel (DD MM YYYY): ";
+                        bool vaildDate =  false;
+                        while (!vaildDate) {
+                            cout << "Enter a specific date to cancel (DD MM YYYY): " << endl;
                             cin >> d >> m >> y;
 
                             // Check if the day, month, and year are valid numbers
                             if (d.length() == 2 && m.length() == 2 && y.length() == 4 && stoi(d) <= 31 && stoi(m) <= 12 && stoi(y) > 0) {
                                 date = d + m + y;
-                                vaildeDate = true;
+                                vaildDate = true;
                             }
                             else {
                                 cout << "Invalid date. Please try again." << endl;
@@ -431,25 +432,36 @@ void Patient_login() {
                         if (!appointmentFound) {
                             cout << "No appointment found for the given date." << endl;
                         }
-
                         break;
                     }
                     case 3: {    // prints the appointment
                         // parameters
-                        string d,m,y;
+                        string d,m,y, date;
+                        bool vaildDate =  false;
+                        while (!vaildDate) {
+                            cout << "Enter the date of your appointment (DD MM YYYY): " << endl;
+                            cin >> d >> m >> y;
 
-                        // user input
-                        cout << "Enter the date of your appointment (DD MM YYYY): " << endl;
-                        cin >> d >> m >> y;
-                        string date = d + m + y;
-
+                            // Check if the day, month, and year are valid numbers
+                            if (d.length() == 2 && m.length() == 2 && y.length() == 4 && stoi(d) <= 31 && stoi(m) <= 12 && stoi(y) > 0) {
+                                date = d + m + y;
+                                vaildDate = true;
+                            }
+                            else {
+                                cout << "Invalid date. Please try again." << endl;
+                            }
+                        }
+                        bool found = false;
                         for (auto &pair: newAppointments) { // prints
                             if (pair.second.get_ptId() == id && pair.second.get_date() == date) {
                                 cout << "Details of your appointment: " << endl;
                                 pair.second.print_for_patient();
+                                found = true;
+
                             }
-                            else
-                                cout << "You have no appointments at that date" << endl;
+                        }
+                        if (!found) {
+                            cout << "You have no appointments at that date" << endl;
                         }
                         break;
                     }
@@ -597,16 +609,26 @@ void Doctor_login() {
                         cout << "4. Exit" << endl;
                         cin >> choice1;
                         switch (choice1) {
-                            case 1: {
-                                // View current appointments
+                            case 1: { // View current appointments
                                 // parameters
                                 bool appointmentFound = false;
-                                string d,m,y;
+                                string d,m,y, date;
 
-                                // user input
-                                cout << "Enter a specific date to view your appointments: DD/MM/YEAR " << endl;
-                                cin >> d >> m >> y;
-                                string date = d + m + y;
+                                // User input for cancellation
+                                bool vaildDate =  false;
+                                while (!vaildDate) {
+                                    cout << "Enter a specific date to view your appointments: DD/MM/YEAR " << endl;
+                                    cin >> d >> m >> y;
+
+                                    // Check if the day, month, and year are valid numbers
+                                    if (d.length() == 2 && m.length() == 2 && y.length() == 4 && stoi(d) <= 31 && stoi(m) <= 12 && stoi(y) > 0) {
+                                        date = d + m + y;
+                                        vaildDate = true;
+                                    }
+                                    else {
+                                        cout << "Invalid date. Please try again." << endl;
+                                    }
+                                }
 
                                 for (const auto& pair : newAppointments) { // print appointments
                                     if (pair.second.get_drId() == id && pair.second.get_date() == date) {
@@ -622,19 +644,35 @@ void Doctor_login() {
                             }
                             case 2: {  // block a date for an appointment
                                 // parameters
-                                string d,m,y;
-                                // user input
-                                cout << "Enter a specific date in which you want to block: DD/MM/YEAR" << endl;
-                                cin >> d >> m >> y;
-                                string date = d + m + y;
+                                string d,m,y, date;
+                                bool vaildDate =  false;
+                                // User input for cancellation
 
+                                while (!vaildDate ) {
+                                    cout << "Enter a specific date in which you want to block: DD/MM/YEAR" << endl;
+                                    cin >> d >> m >> y;
+
+                                    // Check if the day, month, and year are valid numbers
+                                    if (d.length() == 2 && m.length() == 2 && y.length() == 4 && stoi(d) <= 31 && stoi(m) <= 12 && stoi(y) > 0) {
+                                        date = d + m + y;
+                                        vaildDate  = true;
+                                    }
+                                    else {
+                                        cout << "Invalid date. Please try again." << endl;
+                                    }
+                                }
+                                bool dateFound = false;
                                 for (auto& pair : newAppointments) { // set the is_available to false
                                     if (pair.second.get_drId() == id && pair.second.get_date() == date) {
                                         pair.second.set_is_available(false);
+                                        dateFound = true;
                                         cout << "Date blocked successfully" << endl;
                                     }
-                                    else
-                                        cout << "No appointments at that date" << endl;
+                                }
+                                if (!dateFound) {
+                                    Appointment newAppointment (date, id," ", " ", false);
+                                    newAppointments[date] = newAppointment;
+                                    cout << "Date blocked successfully" << endl;
                                 }
                                 saveAppointments(newAppointments);
                                 break;
@@ -883,7 +921,6 @@ bool main_menu() {
         }
     }
 }
-
 
 int main () {
     main_menu();

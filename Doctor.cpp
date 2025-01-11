@@ -53,7 +53,6 @@ string Doctor::getAge() const {
 string Doctor::getEmail() const {
     return email;
 }
-
 void Doctor::printDoctors() const {
     cout << name << endl;
     cout << id << endl;

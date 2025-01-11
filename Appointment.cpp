@@ -24,8 +24,6 @@ void Appointment::print() const {
     cout << "Patient ID: " << ptId << endl;
     cout << "Is available: " << (is_available ? "Yes" : "No") << endl;
     cout << "----------------------------------" << endl;
-
-
 }
 
 void Appointment::print_for_patient() const {
@@ -33,15 +31,11 @@ void Appointment::print_for_patient() const {
     cout << "Time: " << time << endl;
     cout << "Doctor ID: " << drId << endl;
     cout << "Patient ID: " << ptId << endl;
-    if (is_available == false) {
-        cout << "Approved " << endl;
+    if (is_available == true) {
+        cout << "Appointment status: Approved " << endl;
     }
     else {
         cout << "Pending" << endl;
     }
-    cout << "----------------------------------" << endl;
-}
-
-void Appointment::set_is_available(bool const x) {
-    is_available = x;
+    cout << endl;
 }
