@@ -370,7 +370,7 @@ void Patient_login() {
                         string blockedByDoctor = date;
 
                         for (auto &pair: newAppointments) { // checks if the appointment is already booked
-                            if (pair.first == key || pair.second.get_is_Available() == false) {
+                            if (pair.first == key && pair.second.get_is_Available() == false) {
                                 cout << "The appointment is unavailable" << endl;
                                 isAvailable = false;
                                 break;
